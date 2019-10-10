@@ -4,7 +4,7 @@ import { render, fireEvent, cleanup, RenderResult } from '@testing-library/react
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
-import { createBrowserHistory } from 'history'
+import { createMemoryHistory as createHistory } from 'history'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { ConnectedRouter } from 'connected-react-router'
 
@@ -18,7 +18,7 @@ describe('[Connected Router]', () => {
   describe('Navigate to page a', () => {
 
     it('Connected Router Redux show navigate to page a', () => {
-      const history = createBrowserHistory()
+      const history = createHistory()
       const RootReducer = combineReducers( { router: connectRouter(history), })
       const store = createStore( RootReducer, {}, applyMiddleware(routerMiddleware(history), thunk))
       const rendered:RenderResult = render(
@@ -45,8 +45,8 @@ describe('[Connected Router]', () => {
       unmount() // <-- unmount() not working ????
     })
 
-    it('This test should fail', () => {
-      const history = createBrowserHistory()
+    it('This test should fail if using createBrowserHistory, but pass if useing createMemoryHistory', () => {
+      const history = createHistory()
       const RootReducer = combineReducers( { router: connectRouter(history), })
       const store = createStore( RootReducer, {}, applyMiddleware(routerMiddleware(history), thunk))
 
@@ -63,12 +63,12 @@ describe('[Connected Router]', () => {
         debug, container
       } = rendered
 
-      debug(container)                  //<--- show that jsDom was not clear: showing 'Page content a'
+      debug(container)                  //<--- show that jsDom was not clear: showing 'Page content a', ok w createMemoryHistory
       const pageContentA = queryByText('Page content a')
-      expect(pageContentA).toBeNull()  // <-------- Fail !!!
+      expect(pageContentA).toBeNull()  // <-------- Fail, but pass w crearteMemoryHistory !!!
 
       const storeBeforeNavigate = store.getState()
-      expect(storeBeforeNavigate.router.location.pathname).toBe('/')  //<------- Fail!!!
+      expect(storeBeforeNavigate.router.location.pathname).toBe('/')  //<------- Fail, but pass w createMemoryHistory!!!
 
     })
   })
