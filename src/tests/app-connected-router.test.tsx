@@ -10,12 +10,10 @@ import { ConnectedRouter } from 'connected-react-router'
 
 import {App} from '../app'
 
-let rendered1:RenderResult
-let rendered2:RenderResult
 
 describe('[Connected Router]', () => {
-  beforeEach(()=>{ cleanup() })
-  afterEach(()=>{ cleanup() })
+  beforeEach(()=>{ cleanup() }) // <------ cleanup not working ?
+  afterEach(()=>{ cleanup() }) // <------- cleanup not working ?
 
   describe('Navigate to page a', () => {
 
@@ -23,7 +21,7 @@ describe('[Connected Router]', () => {
       const history = createBrowserHistory()
       const RootReducer = combineReducers( { router: connectRouter(history), })
       const store = createStore( RootReducer, {}, applyMiddleware(routerMiddleware(history), thunk))
-      rendered1 = render(
+      const rendered:RenderResult = render(
         <Provider store={store}>
           <ConnectedRouter history={history}>
             <App />
@@ -33,7 +31,7 @@ describe('[Connected Router]', () => {
 
       const {
         getByText, unmount
-      } = rendered1
+      } = rendered
 
       const storeBeforeNavigate = store.getState()
       expect(storeBeforeNavigate.router.location.pathname).toBe('/')
@@ -43,7 +41,8 @@ describe('[Connected Router]', () => {
 
       const storeAfterNavigate = store.getState()
       expect(storeAfterNavigate.router.location.pathname).toBe('/a')
-      unmount()
+
+      unmount() // <-- unmount() not working ????
     })
 
     it('This test should fail', () => {
@@ -51,7 +50,7 @@ describe('[Connected Router]', () => {
       const RootReducer = combineReducers( { router: connectRouter(history), })
       const store = createStore( RootReducer, {}, applyMiddleware(routerMiddleware(history), thunk))
 
-      rendered2 = render(
+      const rendered:RenderResult = render(
         <Provider store={store}>
           <ConnectedRouter history={history}>
             <App />
@@ -62,18 +61,15 @@ describe('[Connected Router]', () => {
       const {
         queryByText,
         debug, container
-      } = rendered2
+      } = rendered
 
-      debug(container)                  //<--- jsDom was not clear: showing page a
-      queryByText(/Link to: \/page a/i) //<--- this should not happen
+      debug(container)                  //<--- show that jsDom was not clear: showing 'Page content a'
+      const pageContentA = queryByText('Page content a')
+      expect(pageContentA).toBeNull()  // <-------- Fail !!!
 
       const storeBeforeNavigate = store.getState()
-      expect(storeBeforeNavigate.router.location.pathname).toBe('/')
+      expect(storeBeforeNavigate.router.location.pathname).toBe('/')  //<------- Fail!!!
 
-    })
-
-    it('is different instance of rendered', ()=>{
-      expect(rendered1).not.toEqual(rendered2)
     })
   })
 
