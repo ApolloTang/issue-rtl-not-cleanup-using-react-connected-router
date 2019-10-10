@@ -19,8 +19,7 @@ describe('[Connected Router]', () => {
 
   describe('Navigate to page a', () => {
 
-    it('Connected Router Redux has path name /a', () => {
-
+    it('Connected Router Redux show navigate to page a', () => {
       const history = createBrowserHistory()
       const RootReducer = combineReducers( { router: connectRouter(history), })
       const store = createStore( RootReducer, {}, applyMiddleware(routerMiddleware(history), thunk))
@@ -47,8 +46,7 @@ describe('[Connected Router]', () => {
       unmount()
     })
 
-    it('Connected Router Redux handle no match', () => {
-
+    it('This test should fail', () => {
       const history = createBrowserHistory()
       const RootReducer = combineReducers( { router: connectRouter(history), })
       const store = createStore( RootReducer, {}, applyMiddleware(routerMiddleware(history), thunk))
@@ -66,15 +64,15 @@ describe('[Connected Router]', () => {
         debug, container
       } = rendered2
 
-      debug(container)  //<--- jestDom was not clear
-      queryByText(/Link to: \/page a/i)
+      debug(container)                  //<--- jsDom was not clear: showing page a
+      queryByText(/Link to: \/page a/i) //<--- this should not happen
 
       const storeBeforeNavigate = store.getState()
       expect(storeBeforeNavigate.router.location.pathname).toBe('/')
 
     })
 
-    it('different instance', ()=>{
+    it('is different instance of rendered', ()=>{
       expect(rendered1).not.toEqual(rendered2)
     })
   })
