@@ -44,7 +44,7 @@
     "jest": "^24.9.0",
     "jest-emotion": "^10.0.17",
     "jest-watch-typeahead": "^0.4.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "prop-types": "^15.7.2",
     "redux-mock-store": "^1.5.3",
     "style-loader": "^1.0.0",
